@@ -14,7 +14,7 @@ type UserCardProps = {
 const UserCard: FC<UserCardProps> = ({ id, name, nickname, img, location, status }) => {
   const [showModal, setShowModal] = useState(false);
 
-  const cardClass = `flex-1 flex flex-col items-center justify-between p-4 rounded-xl gap-4
+  const cardClass = `flex-1 flex flex-col items-center justify-between p-4 rounded-xl gap-4 cursor-pointer
     ${status === 'ok' ? 'bg-[#246E10]' : status === 'warning' ? 'bg-[#B77700]' : 'bg-[#A61213]'}`;
 
   const cardContent = (
@@ -64,15 +64,26 @@ const UserCard: FC<UserCardProps> = ({ id, name, nickname, img, location, status
       )}
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center z-[100]">
-          <div className="bg-[#010101] p-16 rounded-xl flex flex-col justify-center items-center gap-2">
+          <div className="bg-[#010101] p-16 rounded-xl flex flex-col justify-center items-center gap-2 relative">
             <p className="text-4xl font-extrabold uppercase text-white">Medical emergency</p>
             <p className="text-2xl font-medium uppercase text-white">{nickname}</p>
+            <button
+              className='text-white font-extrabold text-2xl absolute top-4 right-4 cursor-pointer'
+              onClick={() => setShowModal(false)}
+            >
+              X
+            </button>
             <div className='grid grid-cols-2 gap-4 mt-8'>
               <div className='p-4 bg-[#2A2A2D] flex items-center justify-center text-white text-2xl rounded-lg'>
                 Move to
                 <span className='text-[#FFEA00]'>&nbsp;Yellow</span>
               </div>
-              <Link href={'/emergency'} className='p-4 bg-[#2A2A2D] flex items-center justify-center text-white text-2xl rounded-lg cursor-pointer'>
+              <Link
+                href={'/emergency'}
+                target='_blank'
+                className='p-4 bg-[#2A2A2D] flex items-center justify-center text-white text-2xl rounded-lg cursor-pointer'
+                onClick={() => setShowModal(false)}
+              >
                 Activate
                 <span className='text-[#FF0004]'>&nbsp;Emergency&nbsp;</span>
                 Protocol
