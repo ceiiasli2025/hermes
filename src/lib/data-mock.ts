@@ -1,0 +1,163 @@
+export const data = [
+  {
+    id: 1,
+    img: '/users/jonny.png',
+    nickname: 'Jonny',
+    name: 'Jonathan Kim',
+    birthdate: 'Feb 5, 1984',
+    gender: 'Male',
+    bloodType: 'A+',
+    location: 'Gateway',
+    ecgBpm: 68,
+    spo2: 99,
+    systolic: 115,
+    diastolic: 79,
+    etco2: 4,
+    respiratoryRate: 13,
+    bodyTemperature: 37.9,
+    glucoseLevel: 100,
+    mentalStage: {
+      percentage: 98,
+      sleep: 'Sleep well',
+      cognitivePerformance: 'Normal'
+    }
+  },
+  {
+    id: 2,
+    img: '/users/nicole.png',
+    nickname: 'Nicole',
+    name: 'Nicole Mann',
+    birthdate: 'Jun 27, 1977',
+    gender: 'Female',
+    bloodType: 'O+',
+    location: 'Gateway',
+    ecgBpm: 87,
+    spo2: 100,
+    systolic: 120,
+    diastolic: 78,
+    etco2: 5,
+    respiratoryRate: 15,
+    bodyTemperature: 38,
+    glucoseLevel: 90,
+    mentalStage: {
+      percentage: 95,
+      sleep: 'Sleep well',
+      cognitivePerformance: 'Normal'
+    }
+  },
+  {
+    id: 3,
+    img: '/users/jessica.png',
+    nickname: 'Jessica',
+    name: 'Jessica Watkins',
+    birthdate: 'May 14, 1988',
+    gender: 'Female',
+    bloodType: 'O+',
+    location: 'Lunar module',
+    ecgBpm: 84,
+    spo2: 100,
+    systolic: 115,
+    diastolic: 76,
+    etco2: 4,
+    respiratoryRate: 13,
+    bodyTemperature: 37.7,
+    glucoseLevel: 80,
+    mentalStage: {
+      percentage: 95,
+      sleep: 'Sleep well',
+      cognitivePerformance: 'Normal'
+    }
+  },
+  {
+    id: 4,
+    img: '/users/christina.png',
+    nickname: 'Christina',
+    name: 'Christina Kock',
+    birthdate: 'Jan 29, 1979',
+    gender: 'Female',
+    bloodType: 'A+',
+    location: 'Kitchen',
+    ecgBpm: 85,
+    spo2: 100,
+    systolic: 110,
+    diastolic: 80,
+    etco2: 4,
+    respiratoryRate: 14,
+    bodyTemperature: 37.2,
+    glucoseLevel: 85,
+    mentalStage: {
+      percentage: 65,
+      sleep: 'Very restless night',
+      cognitivePerformance: 'Pending assessment'
+    }
+  },
+  {
+    id: 5,
+    img: '/users/jeremy.png',
+    nickname: 'Jeremy',
+    name: 'Jeremy Hansen',
+    birthdate: 'Jan 27, 1976',
+    gender: 'Male',
+    bloodType: 'B+',
+    location: 'Kitchen',
+    ecgBpm: 90,
+    spo2: 100,
+    systolic: 122,
+    diastolic: 75,
+    etco2: 4,
+    respiratoryRate: 14,
+    bodyTemperature: 37,
+    glucoseLevel: 80,
+    mentalStage: {
+      percentage: 100,
+      sleep: 'Sleep well',
+      cognitivePerformance: 'Normal'
+    }
+  },
+  {
+    id: 6,
+    img: '/users/victor.png',
+    nickname: 'Victor',
+    name: 'Victor Glover',
+    birthdate: 'Apr 30, 1976',
+    gender: 'Male',
+    bloodType: 'A+',
+    location: 'Kitchen',
+    ecgBpm: 75,
+    spo2: 100,
+    systolic: 112,
+    diastolic: 75,
+    etco2: 4,
+    respiratoryRate: 13,
+    bodyTemperature: 37.5,
+    glucoseLevel: 73,
+    mentalStage: {
+      percentage: 87,
+      sleep: 'Sleep well',
+      cognitivePerformance: 'Mild/moderate cognitive overload'
+    }
+  },
+  {
+    id: 7,
+    img: '/users/reid.png',
+    nickname: 'Reid',
+    name: 'Reid Wiseman',
+    birthdate: 'Nov 11, 1975',
+    gender: 'Male',
+    bloodType: 'O-',
+    location: 'Kitchen',
+    ecgBpm: 80,
+    spo2: 100,
+    systolic: 115,
+    diastolic: 71,
+    etco2: 4,
+    respiratoryRate: 17,
+    bodyTemperature: 37,
+    glucoseLevel: 80,
+    mentalStage: {
+      percentage: 85,
+      sleep: 'Took longer to fall asleep',
+      cognitivePerformance: 'Normal'
+    }
+  }
+]
