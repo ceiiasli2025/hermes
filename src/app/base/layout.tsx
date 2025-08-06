@@ -15,7 +15,7 @@ export default function BaseLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className='flex flex-col h-screen w-screen'>
+    <div className='flex flex-col h-full w-screen'>
       <Navbar>
         <div className='flex items-center justify-start gap-8 flex-1'>
           <Link href="/overview" className='transparent p-4 rounded-xl bg-[#151618] hover:bg-[#151618]/60 cursor-pointer'>

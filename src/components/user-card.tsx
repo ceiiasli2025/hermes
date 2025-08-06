@@ -25,7 +25,7 @@ const UserCard: FC<UserCardProps> = ({ id, name, nickname, img, location, status
         alt={`${name}'s avatar`}
         width={64}
         height={64}
-        className="rounded-full w-[70%] object-contain !aspect-square"
+        className="rounded-full w-[50%] object-contain !aspect-square"
       />
       <div className='flex items-center w-full'>
         <Image

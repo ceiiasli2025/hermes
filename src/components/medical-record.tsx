@@ -40,17 +40,17 @@ export const MedicalRecordModal: FC<MedicalRecordModalProps> = ({
           </button>
           <p className='col-span-4 text-[#D1546C] uppercase text-5xl text-center flex items-center justify-center'>Medical record</p>
         </div>
-        <div className='grid grid-cols-3'>
-          <div className='flex items-center gap-4'>
+        <div className='grid grid-cols-3 gap-6'>
+          <div className='flex items-center gap-2'>
             <p className='text-3xl uppercase text-[#9FA8AF] font-roboto'>Name:</p>
             <p className='text-2xl uppercase text-white font-roboto'>{user.name}</p>
           </div>
-          <div className='flex items-center gap-4'>
-            <p className='text-3xl uppercase text-white font-roboto'>Birthdate:</p>
+          <div className='flex items-center gap-2'>
+            <p className='text-3xl uppercase text-[#9FA8AF] font-roboto'>Birthdate:</p>
             <p className='text-2xl uppercase text-white font-roboto'>{user.birthdate}</p>
           </div>
-          <div className='flex items-center gap-4'>
-            <p className='text-3xl uppercase text-white font-roboto'>Sex:</p>
+          <div className='flex items-center gap-2'>
+            <p className='text-3xl uppercase text-[#9FA8AF] font-roboto'>Sex:</p>
             <p className='text-2xl uppercase text-white font-roboto'>{user.gender}</p>
           </div>
         </div>

@@ -10,7 +10,7 @@ export default function OverviewLayout({
 }) {
   return (
     <StatusProvider>
-      <div className='flex flex-col h-screen w-screen'>
+      <div className='flex flex-col h-full w-screen'>
         {children}
       </div>
     </StatusProvider>
