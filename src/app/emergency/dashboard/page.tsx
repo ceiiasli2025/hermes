@@ -8,7 +8,6 @@ import {
   ChevronUp,
   ChevronDown,
   MoveUp,
-  MoveDown,
 } from 'lucide-react';
 
 const user = {
@@ -20,13 +19,13 @@ const user = {
     gender: 'Male',
     bloodType: 'B+',
     location: 'Kitchen',
-    ecgBpm: 94,
-    spo2: 100,
-    systolic: 183,
-    diastolic: 65,
+    ecgBpm: 220,
+    spo2: 95,
+    systolic: 60,
+    diastolic: 40,
     etco2: 4,
-    respiratoryRate: 17,
-    bodyTemperature: 26,
+    respiratoryRate: 24,
+    bodyTemperature: 36,
     glucoseLevel: 80,
     mentalStage: {
       percentage: 100,
@@ -79,11 +78,15 @@ export default function EmergencyPage() {
           <div className='flex flex-col w-full rounded-xl bg-[#151618] p-4 gap-8'>
             <div className='flex items-center justify-between'>
               <p className='text-3xl uppercase text-white font-roboto'>Body temperature</p>
-              <p className='text-4xl uppercase text-white font-roboto'>{user?.bodyTemperature}°C</p>
+              <p className='text-4xl text-white font-roboto'>{user?.bodyTemperature}°C</p>
             </div>
             <div className='flex items-center justify-between'>
               <p className='text-3xl uppercase text-white font-roboto'>Glucose level</p>
-              <p className='text-4xl uppercase text-white font-roboto'>{user?.glucoseLevel} mg/dL</p>
+              <p className='text-4xl text-white font-roboto'>{user?.glucoseLevel} mg/dL</p>
+            </div>
+            <div className='flex items-center justify-between'>
+              <p className='text-3xl uppercase text-white font-roboto'>Blood pressure</p>
+              <p className='text-4xl text-white font-roboto'>{user?.systolic}/{user?.diastolic} mmHg</p>
             </div>
           </div>
           <div className='flex flex-col w-full rounded-xl bg-[#151618]'>
@@ -93,19 +96,19 @@ export default function EmergencyPage() {
             </div>
             <div className='gap-2 border-b-3 border-[#87868B] px-2 py-4 grid grid-cols-2 grid-rows-2 gap-x-4 gap-y-2 font-semibold'>
               <div className='flex items-center justify-center gap-1'>
-                <MoveUp className='!size-8 text-white' />
+                <MoveUp className='!size-8 text-white rotate-90' />
                 <p className='text-4xl uppercase text-white font-roboto'>29 <span className='text-xl'>ºC</span></p>
               </div>
               <div className='flex items-center justify-center gap-1'>
-                <MoveUp className='!size-8 text-white hidden' />
+                <MoveUp className='!size-8 text-white rotate-90' />
                 <p className='text-4xl uppercase text-white font-roboto'>4,3 <span className='text-xl'>psi</span></p>
               </div>
               <div className='flex items-center justify-center gap-1'>
-                <MoveDown className='!size-8 text-white' />
-                <p className='text-4xl uppercase text-white font-roboto'>97%<span className='text-xl'>O2</span></p>
+                <MoveUp className='!size-8 text-white rotate-45' />
+                <p className='text-4xl uppercase text-white font-roboto'>21%<span className='text-xl'>O2</span></p>
               </div>
               <div className='flex items-center justify-center gap-1'>
-                <MoveUp className='!size-8 text-white' />
+                <MoveUp className='!size-8 text-white rotate-[135deg]' />
                 <p className='text-4xl uppercase text-white font-roboto'>0,7%<span className='text-xl'>CO2</span></p>
               </div>
             </div>

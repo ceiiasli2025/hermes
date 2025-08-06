@@ -1,177 +1,246 @@
 "use client"
 
 import { useState } from "react"
-import { Plus } from "lucide-react"
+import { Plus, X } from 'lucide-react'
 import Image from "next/image"
 
 type ItemStatus = "inactive" | "active" | "critical"
 type Person = "REID" | "VICTOR" | "CHRISTINA"
 
-interface Task {
-  id: string
-  text: string
-  status: ItemStatus
-  assignedTo?: Person
-}
-
 interface CheckableItem {
   id: string
   text: string
   status: ItemStatus
+  system?: boolean
+}
+
+interface Protocol {
+  id: string
+  name: string
+  percentage: number
+  checked: boolean
+  disabled?: boolean
+}
+
+interface Assignment {
+  id: string
+  text: string
+  status: ItemStatus
+  visible: boolean
+  isDrug?: boolean
 }
 
 export default function EmergencyPanel() {
   const [checkableItems, setCheckableItems] = useState<CheckableItem[]>([
-    { id: "clear-airways", text: "Clear airways", status: "inactive" },
-    { id: "able-speak", text: "Able to speak/cough", status: "inactive" },
-    { id: "alert", text: "Alert", status: "inactive" },
-    { id: "reacts-voice", text: "Reacts to voice, pain or unconsciousness", status: "inactive" },
+    // Column A
+    { id: "speaks-clearly", text: "Speaks clearly", status: "critical", system: true },
+    { id: "clear-airway", text: "Clear airway", status: "inactive" },
+    { id: "clear-resp-sounds", text: "Clear resp. sounds", status: "critical", system: true },
+    
+    // Column B  
+    { id: "high-rr", text: "High RR (24cpm)", status: "critical", system: true },
+    { id: "normal-spo2", text: "Normal SpO2 (95%)", status: "active", system: true },
+    { id: "no-difficulty-breathing", text: "No difficulty breathing", status: "inactive" },
+    { id: "symmetric-movement", text: "Symmetric movement", status: "inactive" },
+    { id: "symmetric-sounds", text: "Symmetric sounds", status: "inactive" },
+    { id: "trachea-midline", text: "Trachea in the midline", status: "inactive" },
+    
+    // Column C
+    { id: "high-hr", text: "High HR (220 bpm)", status: "critical", system: true },
+    { id: "short-complex-tachi", text: "Short Complex Tachi.", status: "critical", system: true },
+    { id: "low-bp", text: "Low BP (60/40mmHg)", status: "critical", system: true },
+    { id: "distal-perfusion", text: "Distal perfusion", status: "critical", system: true },
+    { id: "no-massive-bleeding", text: "No massive bleeding", status: "inactive" },
+    
+    // Column D
+    { id: "unresponsive", text: "Unresponsive", status: "critical", system: true },
     { id: "pupils-reaction", text: "Pupils reaction", status: "inactive" },
-    { id: "sign-injuries", text: "Sign of injuries (wounds, fractures, etc)", status: "inactive" },
-    { id: "spacesuit-state", text: "Spacesuit state", status: "inactive" },
-    { id: "difficulty-breathing", text: "Difficulty breathing", status: "inactive" },
-    { id: "severe-bleeding", text: "Severe visible bleeding", status: "inactive" },
+    { id: "normal-blood-sugar", text: "Normal blood sugar", status: "critical", system: true },
+    
+    // Column E
+    { id: "normal-temperature", text: "Normal Temperature", status: "active", system: true },
+    { id: "no-wounds", text: "No wounds", status: "inactive" },
+    { id: "no-fractures", text: "No fractures", status: "inactive" },
+    { id: "no-trauma-history", text: "No trauma history", status: "critical", system: true },
+    { id: "no-spacesuit-damage", text: "No spacesuit damage", status: "critical", system: true },
+    { id: "no-active-bleeding", text: "No active Bleeding", status: "inactive" },
   ])
 
-  const [procedures, setProcedures] = useState<Task[]>([
-    { id: "advise-calm", text: "Advise astronaut to stay calm", status: "active" },
-    { id: "abort-eva", text: "Abort EVA", status: "active" },
-    { id: "contact-astronaut", text: "Contact closest astronaut", status: "active" },
-    { id: "emergency-oxygen", text: "Switch to emergency oxygen source", status: "active" },
-    { id: "give-first-aid", text: "Give first aid", status: "active" },
-    { id: "send-rover", text: "Send Rover", status: "active" },
-    { id: "prepare-infirmary", text: "Prepare infirmary", status: "active" },
+  const [protocols, setProtocols] = useState<Protocol[]>([
+    { id: "emergency", name: "Emergency", percentage: 100, checked: false, disabled: false },
+    { id: "tachydisrithmias", name: "Tachydisrithmias", percentage: 91, checked: false, disabled: false },
+    { id: "stroke", name: "Stroke", percentage: 34, checked: false, disabled: false },
+    { id: "trauma", name: "Trauma", percentage: 9, checked: false, disabled: false },
   ])
 
   const [assignments, setAssignments] = useState({
     REID: [
-      { id: "reid-1", text: "Abort EVA", status: "active" as ItemStatus },
-      { id: "reid-2", text: "Give first aid", status: "critical" as ItemStatus },
+      { id: "reid-1", text: "Prepare infirmary", status: "inactive" as ItemStatus, visible: false, isDrug: false },
+      { id: "reid-2", text: "Prepare IV mat.", status: "critical" as ItemStatus, visible: false, isDrug: false },
+      { id: "reid-3", text: "Prepare drugs", status: "critical" as ItemStatus, visible: false, isDrug: true },
     ],
     VICTOR: [
-      { id: "victor-1", text: "Prepare infirmary", status: "active" as ItemStatus },
-      { id: "victor-2", text: "Saline solution", status: "active" as ItemStatus },
-      { id: "victor-3", text: "Atropine", status: "active" as ItemStatus },
-      { id: "victor-4", text: "Adrenaline", status: "critical" as ItemStatus },
+      { id: "victor-1", text: "Meet Jeremy", status: "inactive" as ItemStatus, visible: false, isDrug: false },
+      { id: "victor-2", text: "Jeremy to Rover", status: "critical" as ItemStatus, visible: false, isDrug: false },
     ],
     CHRISTINA: [
-      { id: "christina-1", text: "Prepare defibrillator", status: "active" as ItemStatus },
-      { id: "christina-2", text: "Prepare ECG", status: "active" as ItemStatus },
-      { id: "christina-3", text: "Prepare ventilator", status: "critical" as ItemStatus },
-      { id: "christina-4", text: "Prepare oxymeter", status: "critical" as ItemStatus },
+      { id: "christina-1", text: "Max EVA1 suit O2", status: "inactive" as ItemStatus, visible: false, isDrug: false },
+      { id: "christina-2", text: "Ensure meeting safety", status: "critical" as ItemStatus, visible: false, isDrug: false },
     ],
   })
 
-  const [assignedTasks, setAssignedTasks] = useState<Set<string>>(new Set())
+  const [showModal, setShowModal] = useState<{
+    show: boolean
+    itemId: string
+    currentStatus: ItemStatus
+  }>({
+    show: false,
+    itemId: "",
+    currentStatus: "inactive"
+  })
+
+  const [showNonSystemModal, setShowNonSystemModal] = useState<{
+    show: boolean
+    itemId: string
+  }>({
+    show: false,
+    itemId: ""
+  })
 
   const toggleItemStatus = (id: string) => {
-    setCheckableItems((prev) =>
-      prev.map((item) => {
-        if (item.id === id) {
-          if (item.status === "inactive") {
-            // Only update status here, add procedure outside
-            return { ...item, status: "active" }
-          } else {
-            // Toggle between active and critical only
-            const nextStatus = item.status === "active" ? "critical" : "active"
-            // Update corresponding procedures
-            setProcedures((prev) =>
-              prev.map((proc) => (proc.text === item.text ? { ...proc, status: nextStatus } : proc)),
-            )
-            // Update corresponding assignments
-            setAssignments((prev) => ({
-              REID: prev.REID.map((task) => (task.text === item.text ? { ...task, status: nextStatus } : task)),
-              VICTOR: prev.VICTOR.map((task) => (task.text === item.text ? { ...task, status: nextStatus } : task)),
-              CHRISTINA: prev.CHRISTINA.map((task) =>
-                task.text === item.text ? { ...task, status: nextStatus } : task,
-              ),
-            }))
-            return { ...item, status: nextStatus }
-          }
-        }
-        return item
-      }),
+    const item = checkableItems.find(i => i.id === id)
+    if (!item) return
+
+    if (item.system) {
+      // For system items, show automatic evaluation modal
+      const newStatus = item.status === "inactive" ? "active" : 
+                       item.status === "active" ? "critical" : "active"
+      setShowModal({
+        show: true,
+        itemId: id,
+        currentStatus: newStatus
+      })
+    } else {
+      // For non-system items, show True/False modal
+      setShowNonSystemModal({
+        show: true,
+        itemId: id
+      })
+    }
+  }
+
+  const handleModalResponse = (keepStatus: boolean) => {
+    const { itemId } = showModal
+    
+    // Set system property to false since human interacted with it
+    setCheckableItems(prev =>
+      prev.map(item => 
+        item.id === itemId 
+          ? { 
+              ...item, 
+              system: false, // Human interacted, so no longer system controlled
+              status: !keepStatus ? 
+                (item.status === "inactive" ? "active" : 
+                 item.status === "active" ? "critical" : "active") : 
+                item.status
+            }
+          : item
+      )
     )
-    // Add procedure only if status was inactive
-    const item = checkableItems.find((i) => i.id === id)
-    if (item && item.status === "inactive") {
-      const alreadyExists = procedures.some((proc) => proc.text === item.text)
-      if (!alreadyExists) {
-        const newTask: Task = {
-          id: `proc-${Date.now()}`,
-          text: item.text,
-          status: "active",
-        }
-        setProcedures((prev) => [...prev, newTask])
+    
+    setShowModal({ show: false, itemId: "", currentStatus: "inactive" })
+  }
+
+  const handleNonSystemModalResponse = (setToActive: boolean) => {
+    const { itemId } = showNonSystemModal
+    
+    setCheckableItems(prev =>
+      prev.map(item => 
+        item.id === itemId 
+          ? { ...item, status: setToActive ? "active" : "critical" }
+          : item
+      )
+    )
+    
+    setShowNonSystemModal({ show: false, itemId: "" })
+  }
+
+  const toggleProtocol = (protocolId: string) => {
+    const protocol = protocols.find(p => p.id === protocolId)
+    if (!protocol || protocol.disabled) return // Don't allow clicking if disabled
+
+    setProtocols(prev =>
+      prev.map(p => 
+        p.id === protocolId ? { ...p, checked: !p.checked, disabled: true } : p // Disable after clicking
+      )
+    )
+
+    // Handle special protocol effects
+    if (protocolId === "emergency") {
+      const isEmergencyChecked = !protocols.find(p => p.id === "emergency")?.checked
+      if (isEmergencyChecked) {
+        // Show first assignment of each user as critical
+        setAssignments(prev => ({
+          REID: prev.REID.map((task, index) => 
+            index === 0 ? { ...task, visible: true, status: "critical" as ItemStatus } : task
+          ),
+          VICTOR: prev.VICTOR.map((task, index) => 
+            index === 0 ? { ...task, visible: true, status: "critical" as ItemStatus } : task
+          ),
+          CHRISTINA: prev.CHRISTINA.map((task, index) => 
+            index === 0 ? { ...task, visible: true, status: "critical" as ItemStatus } : task
+          ),
+        }))
+      }
+    }
+
+    if (protocolId === "tachydisrithmias") {
+      const isTachyChecked = !protocols.find(p => p.id === "tachydisrithmias")?.checked
+      if (isTachyChecked) {
+        // Make Reid's 3rd assignment (Prepare drugs) visible
+        setAssignments(prev => ({
+          ...prev,
+          REID: prev.REID.map((task, index) => 
+            index === 2 ? { ...task, visible: true } : task
+          )
+        }))
+      } else {
+        // Hide Reid's 3rd assignment when unchecked
+        setAssignments(prev => ({
+          ...prev,
+          REID: prev.REID.map((task, index) => 
+            index === 2 ? { ...task, visible: false } : task
+          )
+        }))
       }
     }
   }
 
-  const autoAssignTask = (taskId: string) => {
-    const task = procedures.find((p) => p.id === taskId)
-    if (!task || assignedTasks.has(taskId)) return
+  const handleAssignmentClick = (person: Person, taskId: string) => {
+    setAssignments(prev => {
+      const personTasks = prev[person]
+      const taskIndex = personTasks.findIndex(t => t.id === taskId)
+      const task = personTasks[taskIndex]
 
-    // Modified to remove capacity limits
-    // Assign to the person with the fewest tasks
-    const people: Person[] = ["REID", "VICTOR", "CHRISTINA"]
+      if (!task.visible) return prev
 
-    // Find the person with the fewest tasks
-    let personWithFewestTasks: Person = "REID"
-    let fewestTasks = assignments.REID.length
-
-    if (assignments.VICTOR.length < fewestTasks) {
-      personWithFewestTasks = "VICTOR"
-      fewestTasks = assignments.VICTOR.length
-    }
-
-    if (assignments.CHRISTINA.length < fewestTasks) {
-      personWithFewestTasks = "CHRISTINA"
-    }
-
-    // Assign to the person with the fewest tasks
-    const newAssignment = {
-      id: `${personWithFewestTasks.toLowerCase()}-${Date.now()}`,
-      text: task.text,
-      status: task.status,
-    }
-
-    setAssignments((prev) => ({
-      ...prev,
-      [personWithFewestTasks]: [...prev[personWithFewestTasks], newAssignment],
-    }))
-
-    setAssignedTasks((prev) => new Set(prev).add(taskId))
-  }
-
-  const toggleAssignedTaskStatus = (person: Person, taskId: string) => {
-    setAssignments((prev) => ({
-      ...prev,
-      [person]: prev[person].map((task) => {
-        if (task.id === taskId) {
-          const nextStatus = task.status === "active" ? "critical" : "active"
-
-          // Update corresponding procedures
-          setProcedures((prevProc) =>
-            prevProc.map((proc) => (proc.text === task.text ? { ...proc, status: nextStatus } : proc)),
-          )
-
-          // Update corresponding checkable items
-          setCheckableItems((prevItems) =>
-            prevItems.map((item) => (item.text === task.text ? { ...item, status: nextStatus } : item)),
-          )
-
-          // Update other assignments with the same text
-          setAssignments((prevAssign) => ({
-            REID: prevAssign.REID.map((t) => (t.text === task.text ? { ...t, status: nextStatus } : t)),
-            VICTOR: prevAssign.VICTOR.map((t) => (t.text === task.text ? { ...t, status: nextStatus } : t)),
-            CHRISTINA: prevAssign.CHRISTINA.map((t) => (t.text === task.text ? { ...t, status: nextStatus } : t)),
-          }))
-
-          return { ...task, status: nextStatus }
+      const updatedTasks = personTasks.map((t, index) => {
+        if (t.id === taskId) {
+          return { ...t, status: "active" as ItemStatus }
         }
-        return task
-      }),
-    }))
+        // Show next task when current task changes from critical to active
+        if (index === taskIndex + 1 && task.status === "critical") {
+          // Check if it's a drug task and tachydisrithmias is not checked
+          if (t.isDrug && !protocols.find(p => p.id === "tachydisrithmias")?.checked) {
+            return t // Don't show drug task if tachydisrithmias not checked
+          }
+          return { ...t, visible: true, status: "critical" as ItemStatus }
+        }
+        return t
+      })
+
+      return { ...prev, [person]: updatedTasks }
+    })
   }
 
   const getStatusColor = (status: ItemStatus) => {
@@ -185,18 +254,77 @@ export default function EmergencyPanel() {
     }
   }
 
+  const getItemBorderClass = (item: CheckableItem) => {
+    return item.system ? "border-2 border-[#B77700]" : ""
+  }
+
+  // Filter assignments to show only visible ones, and drug tasks only if tachydisrithmias is checked
+  const getVisibleAssignments = (person: Person) => {
+    const isTachyChecked = protocols.find(p => p.id === "tachydisrithmias")?.checked
+    return assignments[person].filter(task => 
+      task.visible && (!task.isDrug || isTachyChecked)
+    )
+  }
+
   return (
-    <div className="text-white p-6">
+    <div className="text-white p-6 relative">
+      {/* Modal */}
+      {showModal.show && (
+        <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-[#87868B] rounded-lg p-6 max-w-sm w-full mx-4">
+            <h3 className="text-black text-lg font-bold mb-4 text-center">
+              Automatic evaluation correct?
+            </h3>
+            <div className="flex gap-4 justify-center">
+              <button
+                onClick={() => handleModalResponse(true)}
+                className="bg-[#246E10] text-white px-6 py-2 rounded font-bold hover:opacity-80"
+              >
+                Yes
+              </button>
+              <button
+                onClick={() => handleModalResponse(false)}
+                className="bg-[#A61213] text-white px-6 py-2 rounded font-bold hover:opacity-80"
+              >
+                No
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* True/False Modal for Non-System Items */}
+      {showNonSystemModal.show && (
+        <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-[#87868B] rounded-lg p-6 max-w-sm w-full mx-4">
+            <div className="flex gap-4 justify-center">
+              <button
+                onClick={() => handleNonSystemModalResponse(true)}
+                className="bg-[#246E10] text-black px-8 py-3 rounded font-bold hover:opacity-80"
+              >
+                True
+              </button>
+              <button
+                onClick={() => handleNonSystemModalResponse(false)}
+                className="bg-[#A61213] text-black px-8 py-3 rounded font-bold hover:opacity-80"
+              >
+                False
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header Grid */}
       <div className="grid grid-cols-5 mb-8 bg-[#151618] rounded-xl h-full">
         {/* Column A */}
-        <div className="space-y-3 border-r-3  border-[#79787D] font-bold pb-8">
-          <h3 className="text-2xl font-bold text-start p-2 h-12 w-full border-b-3  border-[#79787D]">A</h3>
-          {checkableItems.slice(0, 2).map((item) => (
+        <div className="space-y-3 border-r-3 border-[#79787D] font-bold pb-8">
+          <h3 className="text-2xl font-bold text-start p-2 h-12 w-full border-b-3 border-[#79787D]">A</h3>
+          {checkableItems.slice(0, 3).map((item) => (
             <div key={item.id} className="flex items-center space-x-2 px-2">
               <button
                 onClick={() => toggleItemStatus(item.id)}
-                className={`!w-4 !h-4 !min-w-4 !min-h-4 rounded mr-2 ${getStatusColor(item.status)}`}
+                className={`!w-4 !h-4 !min-w-4 !min-h-4 rounded mr-2 ${getStatusColor(item.status)} ${getItemBorderClass(item)} hover:opacity-80`}
               ></button>
               <span className="text-sm font-bold">{item.text}</span>
             </div>
@@ -204,168 +332,110 @@ export default function EmergencyPanel() {
         </div>
 
         {/* Column B */}
-        <div className="space-y-3 border-r-3  border-[#79787D] font-bold pb-8">
-          <h3 className="text-2xl font-bold text-start p-2 h-12 w-full border-b-3  border-[#79787D]">B</h3>
-          <div className="px-2">
-            <h4 className="text-[#58B0D9] font-semibold">Breathing Rate:</h4>
-            <div className="space-y-2 text-sm py-2">
-              <div className="flex items-center text-[#58B0D9]">
-                <span className="!w-4 !h-4 !min-w-4 !min-h-4 bg-[#A61213] rounded mr-2"></span>Normal (12-20)
-              </div>
-              <div className="flex items-center text-[#58B0D9]">
-                <span className="!w-4 !h-4 !min-w-4 !min-h-4 bg-[#A61213] rounded mr-2"></span>Tachypnea ({">"} 20)
-              </div>
-              <div className="flex items-center text-[#58B0D9]">
-                <span className="!w-4 !h-4 !min-w-4 !min-h-4 bg-[#246E10] rounded mr-2"></span>Bradypnea ({"<"} 12)
-              </div>
-            </div>
-            <div className="mt-3 flex items-center space-x-2">
-              <button
-                onClick={() => toggleItemStatus("difficulty-breathing")}
-                className={`!w-4 !h-4 !min-w-4 !min-h-4 rounded mr-2 ${getStatusColor(checkableItems.find((i) => i.id === "difficulty-breathing")?.status || "inactive")}`}
-              ></button>
-              <span className="text-sm">Difficulty breathing</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Column C */}
-        <div className="space-y-3 border-r-3  border-[#79787D] font-bold pb-8">
-          <h3 className="text-2xl font-bold text-start p-2 h-12 w-full border-b-3  border-[#79787D]">C</h3>
-          <div className="px-2">
-            <h4 className="text-[#58B0D9] font-semibold">Heart Rate:</h4>
-            <div className="space-y-2 text-sm py-2">
-              <div className="flex items-center text-[#58B0D9]">
-                <span className="!w-4 !h-4 !min-w-4 !min-h-4 bg-[#A61213] rounded mr-2"></span>Normal (60-100)
-              </div>
-              <div className="flex items-center text-[#58B0D9]">
-                <span className="!w-4 !h-4 !min-w-4 !min-h-4 bg-[#A61213] rounded mr-2"></span>Tachycardia ({">"} 100)
-              </div>
-              <div className="flex items-center text-[#58B0D9]">
-                <span className="!w-4 !h-4 !min-w-4 !min-h-4 bg-[#246E10] rounded mr-2"></span>Bradycardia ({"<"} 60)
-              </div>
-            </div>
-          </div>
-          <div className="mt-3 px-2">
-            <h4 className="text-[#58B0D9] font-semibold">Blood Pressure:</h4>
-            <div className="space-y-2 text-sm py-2">
-              <div className="flex items-center text-[#58B0D9]">
-                <span className="!w-4 !h-4 !min-w-4 !min-h-4 bg-[#A61213] rounded mr-2"></span>Normal
-              </div>
-              <div className="flex items-center text-[#58B0D9]">
-                <span className="!w-4 !h-4 !min-w-4 !min-h-4 bg-[#A61213] rounded mr-2"></span>Hypertension (140/90)
-              </div>
-              <div className="flex items-center text-[#58B0D9]">
-                <span className="!w-4 !h-4 !min-w-4 !min-h-4 bg-[#246E10] rounded mr-2"></span>Hypotension (90/60)
-              </div>
-            </div>
-            <div className="mt-3 flex items-center space-x-2">
-              <button
-                onClick={() => toggleItemStatus("severe-bleeding")}
-                className={`!w-4 !h-4 !min-w-4 !min-h-4 rounded mr-2 ${getStatusColor(checkableItems.find((i) => i.id === "severe-bleeding")?.status || "inactive")}`}
-              ></button>
-              <span className="text-sm">Severe visible bleeding</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Column D */}
-        <div className="space-y-3 border-r-3  border-[#79787D] font-bold pb-8">
-          <h3 className="text-2xl font-bold text-start p-2 h-12 w-full border-b-3  border-[#79787D]">D</h3>
-          <div className="px-2">
-            <h4 className="text-white font-semibold">Consciousness (AVPU)</h4>
-            {checkableItems.slice(2, 5).map((item) => (
-              <div key={item.id} className="flex items-center space-x-2 mt-2">
+        <div className="space-y-3 border-r-3 border-[#79787D] font-bold pb-8">
+          <h3 className="text-2xl font-bold text-start p-2 h-12 w-full border-b-3 border-[#79787D]">B</h3>
+          <div className="px-2 space-y-2">
+            {checkableItems.slice(3, 9).map((item) => (
+              <div key={item.id} className="flex items-center space-x-2">
                 <button
                   onClick={() => toggleItemStatus(item.id)}
-                  className={`!min-w-4 !h-4 rounded mr-2 ${getStatusColor(item.status)}`}
+                  className={`!w-4 !h-4 !min-w-4 !min-h-4 rounded mr-2 ${getStatusColor(item.status)} ${getItemBorderClass(item)} hover:opacity-80`}
                 ></button>
                 <span className="text-sm">{item.text}</span>
               </div>
             ))}
           </div>
-          <div className="mt-3 px-2">
-            <h4 className="text-blue-400 font-semibold">Glucose level:</h4>
-            <div className="space-y-2 text-sm py-2">
-              <div className="flex items-center text-[#58B0D9]">
-                <span className="!w-4 !h-4 !min-w-4 !min-h-4 bg-[#246E10] rounded mr-2"></span>Normal
-              </div>
-              <div className="flex items-center text-[#58B0D9]">
-                <span className="!w-4 !h-4 !min-w-4 !min-h-4 bg-red-500 rounded mr-2"></span>Hyperglycemia ({">"} 126?)
-              </div>
-              <div className="flex items-center text-[#58B0D9]">
-                <span className="!w-4 !h-4 !min-w-4 !min-h-4 bg-red-500 rounded mr-2"></span>Hypoglycemia ({"<"} 70)
-              </div>
-            </div>
-          </div>
         </div>
 
-        {/* Column E */}
-        <div className="space-y-3 font-bold">
-          <h3 className="text-2xl font-bold text-start p-2 h-12 w-full border-b-3  border-[#79787D]">E</h3>
-          <div className="px-2">
-            <h4 className="text-[#58B0D9] font-semibold">Temperature:</h4>
-            <div className="space-y-2 text-sm py-2">
-              <div className="flex items-center text-[#58B0D9]">
-                <span className="!w-4 !h-4 !min-w-4 !min-h-4 bg-[#246E10] rounded mr-2"></span>Normal
-              </div>
-              <div className="flex items-center text-[#58B0D9]">
-                <span className="!w-4 !h-4 !min-w-4 !min-h-4 bg-red-500 rounded mr-2"></span>Hyperthermia ({">"} 40°C)
-              </div>
-              <div className="flex items-center text-[#58B0D9]">
-                <span className="!w-4 !h-4 !min-w-4 !min-h-4 bg-red-500 rounded mr-2"></span>Hypothermia ({"<"} 35°C)
-              </div>
-            </div>
-          </div>
-          {checkableItems.slice(5).map((item) => (
-            <div key={item.id} className="flex items-center space-x-2 px-2">
-              <button
-                onClick={() => toggleItemStatus(item.id)}
-                className={`!w-4 !h-4 !min-w-4 !min-h-4 rounded mr-2 ${getStatusColor(item.status)}`}
-              ></button>
-              <span className="text-sm">{item.text}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Bottom Section */}
-      <div className="grid grid-cols-5 bg-[#151618] rounded-xl h-full">
-        {/* Procedures & Tasks */}
-        <div className="space-y-3 p-8 col-span-2 border-r-3 border-[#79787D]">
-          <div className="flex items-center space-x-2">
-            <h3 className="text-xl font-bold">PROCEDURES & TASKS</h3>
-            <Plus className="w-5 h-5" />
-          </div>
-          <div className="space-y-2">
-            {procedures.map((task) => (
-              <div key={task.id} className="flex items-center space-x-2">
-                <span className={`!w-4 !h-4 !min-w-4 !min-h-4 rounded ${getStatusColor(task.status)}`}></span>
+        {/* Column C */}
+        <div className="space-y-3 border-r-3 border-[#79787D] font-bold pb-8">
+          <h3 className="text-2xl font-bold text-start p-2 h-12 w-full border-b-3 border-[#79787D]">C</h3>
+          <div className="px-2 space-y-2">
+            {checkableItems.slice(9, 14).map((item) => (
+              <div key={item.id} className="flex items-center space-x-2">
                 <button
-                  onClick={() => autoAssignTask(task.id)}
-                  className="text-sm flex-1 text-left hover:bg-gray-800 px-1 py-1 rounded"
-                >
-                  {task.text}
-                </button>
+                  onClick={() => toggleItemStatus(item.id)}
+                  className={`!w-4 !h-4 !min-w-4 !min-h-4 rounded mr-2 ${getStatusColor(item.status)} ${getItemBorderClass(item)} hover:opacity-80`}
+                ></button>
+                <span className="text-sm">{item.text}</span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* REID */}
-        <div className="space-y-3 col-span-1 p-8">
-          <div className="flex items-center space-x-2">
-            <Image src="/icons/phone.png" alt="Contact icon" width={48} height={48} className="inline-block w-8 h-8" />
-            <h3 className="text-lg font-bold">REID: {assignments.REID.filter(task => task.status === "active").length}/2</h3>
+        {/* Column D */}
+        <div className="space-y-3 border-r-3 border-[#79787D] font-bold pb-8">
+          <h3 className="text-2xl font-bold text-start p-2 h-12 w-full border-b-3 border-[#79787D]">D</h3>
+          <div className="px-2 space-y-2">
+            {checkableItems.slice(14, 17).map((item) => (
+              <div key={item.id} className="flex items-center space-x-2">
+                <button
+                  onClick={() => toggleItemStatus(item.id)}
+                  className={`!min-w-4 !h-4 rounded mr-2 ${getStatusColor(item.status)} ${getItemBorderClass(item)} hover:opacity-80`}
+                ></button>
+                <span className="text-sm">{item.text}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Column E */}
+        <div className="space-y-3 font-bold">
+          <h3 className="text-2xl font-bold text-start p-2 h-12 w-full border-b-3 border-[#79787D]">E</h3>
+          <div className="px-2 space-y-2">
+            {checkableItems.slice(17).map((item) => (
+              <div key={item.id} className="flex items-center space-x-2">
+                <button
+                  onClick={() => toggleItemStatus(item.id)}
+                  className={`!w-4 !h-4 !min-w-4 !min-h-4 rounded mr-2 ${getStatusColor(item.status)} ${getItemBorderClass(item)} hover:opacity-80`}
+                ></button>
+                <span className="text-sm">{item.text}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom Section */}
+      <div className="grid grid-cols-5 bg-[#151618] rounded-xl h-full">
+        {/* Protocols */}
+        <div className="space-y-3 p-8 col-span-2 border-r-3 border-[#79787D]">
+          <div className="flex items-center justify-between space-x-2 w-full">
+            <h3 className="text-xl font-bold">Protocols</h3>
+            <Plus className="w-5 h-5" />
           </div>
           <div className="space-y-2">
-            {assignments.REID.map((task) => (
-              <div key={task.id} className="flex items-center space-x-2">
-                <button
-                  onClick={() => toggleAssignedTaskStatus("REID", task.id)}
-                  className={`!w-4 !h-4 !min-w-4 !min-h-4 rounded ${getStatusColor(task.status)} hover:opacity-80`}
-                ></button>
-                <span className="text-sm">{task.text}</span>
+            {protocols.map((protocol) => (
+              <div 
+                key={protocol.id} 
+                className={`flex items-center justify-between rounded p-2 ${protocol.checked ? 'bg-[#D1546C]' : 'bg-[#D9D9D9]'} ${protocol.disabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+              >
+                <div className="flex items-center space-x-2">
+                  <div className="relative">
+                    <input
+                      type="checkbox"
+                      checked={protocol.checked}
+                      onChange={() => toggleProtocol(protocol.id)}
+                      disabled={protocol.disabled}
+                      className="appearance-none w-6 h-6 bg-white border-2 border-gray-300 rounded checked:bg-white checked:border-[#D1546C] focus:outline-none disabled:cursor-not-allowed"
+                    />
+                    {protocol.checked && (
+                      <svg
+                        className="absolute top-1 left-1 w-4 h-4 text-[#D1546C] pointer-events-none"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    )}
+                  </div>
+                  <span className={`text-sm font-bold text-black`}>{protocol.name}</span>
+                </div>
+                <span className={`text-sm font-bold text-black`}>{protocol.percentage}%</span>
               </div>
             ))}
           </div>
@@ -374,14 +444,33 @@ export default function EmergencyPanel() {
         {/* VICTOR */}
         <div className="space-y-3 col-span-1 p-8">
           <div className="flex items-center space-x-2">
-            <Image src="/icons/phone.png" alt="Contact icon" width={48} height={48} className="inline-block w-8 h-8" />
-            <h3 className="text-lg font-bold">VICTOR: {assignments.VICTOR.filter(task => task.status === "active").length}/4</h3>
+            <Image src="/icons/phone.png" alt="Contact icon" width={32} height={32} className="inline-block w-8 h-8" />
+            <h3 className="text-lg font-bold">VICTOR</h3>
           </div>
           <div className="space-y-2">
-            {assignments.VICTOR.map((task) => (
+            {getVisibleAssignments("VICTOR").map((task) => (
               <div key={task.id} className="flex items-center space-x-2">
                 <button
-                  onClick={() => toggleAssignedTaskStatus("VICTOR", task.id)}
+                  onClick={() => handleAssignmentClick("VICTOR", task.id)}
+                  className={`!w-4 !h-4 !min-w-4 !min-h-4 rounded ${getStatusColor(task.status)} hover:opacity-80`}
+                ></button>
+                <span className="text-sm">{task.text}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* REID */}
+        <div className="space-y-3 col-span-1 p-8">
+          <div className="flex items-center space-x-2">
+            <Image src="/icons/phone.png" alt="Contact icon" width={32} height={32} className="inline-block w-8 h-8" />
+            <h3 className="text-lg font-bold">REID</h3>
+          </div>
+          <div className="space-y-2">
+            {getVisibleAssignments("REID").map((task) => (
+              <div key={task.id} className="flex items-center space-x-2">
+                <button
+                  onClick={() => handleAssignmentClick("REID", task.id)}
                   className={`!w-4 !h-4 !min-w-4 !min-h-4 rounded ${getStatusColor(task.status)} hover:opacity-80`}
                 ></button>
                 <span className="text-sm">{task.text}</span>
@@ -393,14 +482,15 @@ export default function EmergencyPanel() {
         {/* CHRISTINA */}
         <div className="space-y-3 col-span-1 p-8">
           <div className="flex items-center space-x-2">
-            <Image src="/icons/phone.png" alt="Contact icon" width={48} height={48} className="inline-block w-8 h-8" />
-            <h3 className="text-lg font-bold">CHRISTINA: {assignments.CHRISTINA.filter(task => task.status === "active").length}/4</h3>
+            <Image src="/icons/phone.png" alt="Contact icon" width={32} height={32} className="inline-block w-8 h-8" />
+            <h3 className="text-lg font-bold">CHRISTINA</h3>
+            <span className="bg-white text-[#A61213] text-lg font-bold py-0 flex items-center justify-center rounded-lg ml-4 w-7 aspect-square">TL</span>
           </div>
           <div className="space-y-2">
-            {assignments.CHRISTINA.map((task) => (
+            {getVisibleAssignments("CHRISTINA").map((task) => (
               <div key={task.id} className="flex items-center space-x-2">
                 <button
-                  onClick={() => toggleAssignedTaskStatus("CHRISTINA", task.id)}
+                  onClick={() => handleAssignmentClick("CHRISTINA", task.id)}
                   className={`!w-4 !h-4 !min-w-4 !min-h-4 rounded ${getStatusColor(task.status)} hover:opacity-80`}
                 ></button>
                 <span className="text-sm">{task.text}</span>

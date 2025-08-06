@@ -65,11 +65,15 @@ export default function UserOverviewPage() {
           <div className='flex flex-col w-full rounded-xl bg-[#151618] p-4 gap-8'>
             <div className='flex items-center justify-between'>
               <p className='text-3xl uppercase text-white font-roboto'>Body temperature</p>
-              <p className='text-4xl uppercase text-white font-roboto'>{user?.bodyTemperature}°C</p>
+              <p className='text-4xl text-white font-roboto'>{user?.bodyTemperature}°C</p>
             </div>
             <div className='flex items-center justify-between'>
               <p className='text-3xl uppercase text-white font-roboto'>Glucose level</p>
-              <p className='text-4xl uppercase text-white font-roboto'>{user?.glucoseLevel} mg/dL</p>
+              <p className='text-4xl text-white font-roboto'>{user?.glucoseLevel} mg/dL</p>
+            </div>
+            <div className='flex items-center justify-between'>
+              <p className='text-3xl uppercase text-white font-roboto'>Blood pressure</p>
+              <p className='text-4xl text-white font-roboto'>{user?.systolic}/{user?.diastolic} mmHg</p>
             </div>
           </div>
           <div className='flex flex-col w-full rounded-xl bg-[#151618] p-4 gap-8'>

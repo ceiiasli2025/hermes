@@ -47,24 +47,6 @@ const Waveform: FC<WaveformProps> = ({ user }) => {
         </div>
         <div className="lg:col-span-3 bg-[#151618] relative flex items-center">
           <WaveformCanvas
-            color="#971D25"
-            frequency={user.ecgBpm / 60}
-            amplitude={0.7}
-            time={time}
-            waveType="bp"
-            systolic={user.systolic}
-            diastolic={user.diastolic}
-          />
-        </div>
-        <div className="p-4 flex flex-col items-center justify-center animate-pulse gap-2">
-          <div className="text-white text-4xl font-bold">
-            {user.systolic}/{user.diastolic}
-          </div>
-          <div className="text-white text-xl font-medium">SYS/DIA</div>
-          <div className="text-white text-xl font-medium">NIBP mmHG</div>
-        </div>
-        <div className="lg:col-span-3 bg-[#151618] relative flex items-center">
-          <WaveformCanvas
             color="#fff"
             frequency={user.respiratoryRate / 60}
             amplitude={0.5}

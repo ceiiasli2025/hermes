@@ -58,36 +58,42 @@ export const MedicalRecordModal: FC<MedicalRecordModalProps> = ({
           <p className='text-3xl uppercase text-[#EF4A50] font-roboto'>Blood Type:</p>
           <p className='text-2xl uppercase text-white font-roboto'>{user.bloodType}</p>
         </div>
-        <div className='grid grid-cols-3 gap-4'>
-          <div className='flex flex-col items-center justify-center gap-8 bg-[#777777] rounded-xl p-4 aspect-square'>
-            <Image
-              src="/record_1.png"
-              alt="Medical record 1"
-              width={152}
-              height={152}
-              className="w-40 h-40 object-contain"
-            />
-            <p className='text-xl uppercase text-black font-roboto font-semibold w-2/3 text-center'>Medical Conditions/Diagnoses</p>
+        <div className='grid grid-cols-2 grid-rows-2 gap-4'>
+          <div className='flex flex-col col-span-1 row-span-2 items-center justify-center gap-8 bg-[#777777] rounded-xl p-4'>
+            <div className='flex items-center gap-4 w-full px-4'>
+              <Image
+                src="/record_1.png"
+                alt="Medical record 1"
+                width={152}
+                height={152}
+                className="w-16 h-16 object-contain"
+              />
+              <p className='text-xl text-black font-roboto font-semibold w-2/3 text-center'>Past Medical History</p>
+            </div>
+            <ul className='list-disc text-black font-roboto font-semibold text-xl'>
+              <li>Adaptative Microgravity Syndrome</li>
+              <li>Shellfish allergy</li>
+            </ul>
           </div>
-          <div className='flex flex-col items-center gap-8 justify-center bg-[#777777] rounded-xl p-4 aspect-square'>
-            <Image
-              src="/record_2.png"
-              alt="Medical record 2"
-              width={152}
-              height={152}
-              className="w-40 h-40 object-contain"
-            />
-            <p className='text-xl uppercase text-black font-roboto font-semibold w-2/3 text-center'>Medical Conditions/Diagnoses</p>
-          </div>
-          <div className='flex flex-col items-center justify-center gap-8 bg-[#777777] rounded-xl p-4 aspect-square'>
+          <div className='flex items-center justify-center gap-2 bg-[#777777] rounded-xl p-4'>
             <Image
               src="/record_3.png"
               alt="Medical record 3"
               width={152}
               height={152}
-              className="w-40 h-40 object-contain"
+              className="w-24 h-24 object-contain"
             />
-            <p className='text-xl uppercase text-black font-roboto font-semibold w-2/3 text-center'>Medical Conditions/Diagnoses</p>
+            <p className='text-xl text-black font-roboto font-semibold w-2/3 text-center'>Medical History</p>
+          </div>
+          <div className='flex items-center gap-2 justify-center bg-[#777777] rounded-xl p-4'>
+            <Image
+              src="/record_2.png"
+              alt="Medical record 2"
+              width={152}
+              height={152}
+              className="w-24 h-24 object-contain"
+            />
+            <p className='text-xl text-black font-roboto font-semibold w-2/3 text-center'>Exams and Blood works</p>
           </div>
         </div>
       </div>

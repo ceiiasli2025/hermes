@@ -30,7 +30,17 @@ const Dashboard: FC = () => {
           name={user.name}
           nickname={user.nickname}
           img={user.img}
-          location={user.location}
+          location={
+            criticalStatus
+              ? user.id === 4 || user.id === 7
+                ? 'Laboratory'
+                : user.id === 5
+                  ? 'EVA1'
+                  : user.id === 6
+                    ? 'EVA2'
+                    : user.location
+              : user.location
+          }
           status={criticalStatus && user.id === 5 ? "critical" : "ok"}
         />
       )
