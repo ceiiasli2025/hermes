@@ -98,6 +98,7 @@ const getDefaultState = (): AppState => ({
 export default function EmergencyPanel() {
   // 1) Track whether we've hydrated on the client yet
   const [hydrated, setHydrated] = useState(false)
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false)
 
   // 2) Load saved state only once, after hydration
   const [checkableItems, setCheckableItems] = useState<CheckableItem[]>([])
@@ -159,70 +160,61 @@ export default function EmergencyPanel() {
 
   // Hydration effect - runs once on client mount
   useEffect(() => {
-    setHydrated(true)
-
     // Now that we're client-side, try to rehydrate from localStorage
     let initial: AppState
     try {
       const saved = localStorage.getItem('emergency-panel-state')
+      console.log('Loading from localStorage:', saved ? 'Found saved data' : 'No saved data found')
+      
       if (saved) {
         const parsed = JSON.parse(saved) as AppState
         if (parsed.checkableItems && parsed.protocols && parsed.assignments) {
+          console.log('Using saved state')
           initial = parsed
         } else {
+          console.log('Invalid saved state, using default')
           initial = getDefaultState()
         }
       } else {
+        console.log('No saved state found, using default')
         initial = getDefaultState()
       }
-    } catch {
+    } catch (error) {
+      console.log('Error loading saved state, using default:', error)
       initial = getDefaultState()
     }
 
     setCheckableItems(initial.checkableItems)
     setProtocols(initial.protocols)
     setAssignments(initial.assignments)
+    setHydrated(true)
+    setInitialLoadComplete(true)
   }, [])
 
-  // Save state to localStorage whenever state changes (only after hydration)
+  // Save state to localStorage whenever state changes (only after initial load is complete)
   useEffect(() => {
-    if (!hydrated) return // Don't save until we're hydrated
+    if (!initialLoadComplete) {
+      console.log('Skipping save - initial load not complete')
+      return // Don't save until initial load is complete
+    }
     
     const stateToSave: AppState = {
       checkableItems,
       protocols,
       assignments
     }
+    console.log('Saving to localStorage')
     localStorage.setItem('emergency-panel-state', JSON.stringify(stateToSave))
-  }, [checkableItems, protocols, assignments, hydrated])
+  }, [checkableItems, protocols, assignments, initialLoadComplete])
 
   // Save state when component unmounts (navigation away)
   useEffect(() => {
-    if (!hydrated) return // Don't set up listeners until hydrated
-
-    const handleBeforeUnload = () => {
-      const stateToSave: AppState = {
-        checkableItems,
-        protocols,
-        assignments
-      }
-      localStorage.setItem('emergency-panel-state', JSON.stringify(stateToSave))
-    }
-
-    // Save on page unload/refresh
-    window.addEventListener('beforeunload', handleBeforeUnload)
-    
-    // Save when component unmounts (navigation)
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload)
-      const stateToSave: AppState = {
-        checkableItems,
-        protocols,
-        assignments
-      }
-      localStorage.setItem('emergency-panel-state', JSON.stringify(stateToSave))
-    }
-  }, [checkableItems, protocols, assignments, hydrated])
+    if (!initialLoadComplete) return;
+    localStorage.setItem(
+      'emergency-panel-state',
+      JSON.stringify({ checkableItems, protocols, assignments })
+    );
+  }, [checkableItems, protocols, assignments, initialLoadComplete]);
 
   // 3) Don't render *any* UI until after hydration
   if (!hydrated) return null
