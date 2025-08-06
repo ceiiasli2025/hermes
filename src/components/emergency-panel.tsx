@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Plus, X } from 'lucide-react'
 import Image from "next/image"
 
@@ -30,50 +30,55 @@ interface Assignment {
   isDrug?: boolean
 }
 
-export default function EmergencyPanel() {
-  const [checkableItems, setCheckableItems] = useState<CheckableItem[]>([
+interface AppState {
+  checkableItems: CheckableItem[]
+  protocols: Protocol[]
+  assignments: {
+    REID: Assignment[]
+    VICTOR: Assignment[]
+    CHRISTINA: Assignment[]
+  }
+}
+
+// Default initial state
+const getDefaultState = (): AppState => ({
+  checkableItems: [
     // Column A
     { id: "speaks-clearly", text: "Speaks clearly", status: "critical", system: true },
     { id: "clear-airway", text: "Clear airway", status: "inactive" },
-    { id: "clear-resp-sounds", text: "Clear resp. sounds", status: "critical", system: true },
-    
+    { id: "clear-resp-sounds", text: "Clear resp. sounds", status: "active", system: true },
     // Column B  
     { id: "high-rr", text: "High RR (24cpm)", status: "critical", system: true },
-    { id: "normal-spo2", text: "Normal SpO2 (95%)", status: "active", system: true },
+    { id: "normal-spo2", text: "Normal SpO2 (95%)", status: "active" },
     { id: "no-difficulty-breathing", text: "No difficulty breathing", status: "inactive" },
     { id: "symmetric-movement", text: "Symmetric movement", status: "inactive" },
     { id: "symmetric-sounds", text: "Symmetric sounds", status: "inactive" },
     { id: "trachea-midline", text: "Trachea in the midline", status: "inactive" },
-    
     // Column C
     { id: "high-hr", text: "High HR (220 bpm)", status: "critical", system: true },
     { id: "short-complex-tachi", text: "Short Complex Tachi.", status: "critical", system: true },
     { id: "low-bp", text: "Low BP (60/40mmHg)", status: "critical", system: true },
     { id: "distal-perfusion", text: "Distal perfusion", status: "critical", system: true },
     { id: "no-massive-bleeding", text: "No massive bleeding", status: "inactive" },
-    
     // Column D
     { id: "unresponsive", text: "Unresponsive", status: "critical", system: true },
     { id: "pupils-reaction", text: "Pupils reaction", status: "inactive" },
-    { id: "normal-blood-sugar", text: "Normal blood sugar", status: "critical", system: true },
-    
+    { id: "normal-blood-sugar", text: "Normal blood sugar", status: "active", system: true },
     // Column E
-    { id: "normal-temperature", text: "Normal Temperature", status: "active", system: true },
+    { id: "normal-temperature", text: "Normal Temperature", status: "active" },
     { id: "no-wounds", text: "No wounds", status: "inactive" },
     { id: "no-fractures", text: "No fractures", status: "inactive" },
-    { id: "no-trauma-history", text: "No trauma history", status: "critical", system: true },
-    { id: "no-spacesuit-damage", text: "No spacesuit damage", status: "critical", system: true },
+    { id: "no-trauma-history", text: "No trauma history", status: "active", system: true },
+    { id: "no-spacesuit-damage", text: "No spacesuit damage", status: "active", system: true },
     { id: "no-active-bleeding", text: "No active Bleeding", status: "inactive" },
-  ])
-
-  const [protocols, setProtocols] = useState<Protocol[]>([
+  ],
+  protocols: [
     { id: "emergency", name: "Emergency", percentage: 100, checked: false, disabled: false },
     { id: "tachydisrithmias", name: "Tachydisrithmias", percentage: 91, checked: false, disabled: false },
     { id: "stroke", name: "Stroke", percentage: 34, checked: false, disabled: false },
     { id: "trauma", name: "Trauma", percentage: 9, checked: false, disabled: false },
-  ])
-
-  const [assignments, setAssignments] = useState({
+  ],
+  assignments: {
     REID: [
       { id: "reid-1", text: "Prepare infirmary", status: "inactive" as ItemStatus, visible: false, isDrug: false },
       { id: "reid-2", text: "Prepare IV mat.", status: "critical" as ItemStatus, visible: false, isDrug: false },
@@ -87,6 +92,24 @@ export default function EmergencyPanel() {
       { id: "christina-1", text: "Max EVA1 suit O2", status: "inactive" as ItemStatus, visible: false, isDrug: false },
       { id: "christina-2", text: "Ensure meeting safety", status: "critical" as ItemStatus, visible: false, isDrug: false },
     ],
+  }
+})
+
+export default function EmergencyPanel() {
+  // 1) Track whether we've hydrated on the client yet
+  const [hydrated, setHydrated] = useState(false)
+
+  // 2) Load saved state only once, after hydration
+  const [checkableItems, setCheckableItems] = useState<CheckableItem[]>([])
+  const [protocols, setProtocols] = useState<Protocol[]>([])
+  const [assignments, setAssignments] = useState<{
+    REID: Assignment[]
+    VICTOR: Assignment[]
+    CHRISTINA: Assignment[]
+  }>({
+    REID: [],
+    VICTOR: [],
+    CHRISTINA: []
   })
 
   const [showModal, setShowModal] = useState<{
@@ -107,14 +130,136 @@ export default function EmergencyPanel() {
     itemId: ""
   })
 
+  // New modal states for special items
+  const [showPupilsModal, setShowPupilsModal] = useState<{
+    show: boolean
+    step: 1 | 2
+    itemId: string
+  }>({
+    show: false,
+    step: 1,
+    itemId: ""
+  })
+
+  const [showWoundsModal, setShowWoundsModal] = useState<{
+    show: boolean
+    itemId: string
+  }>({
+    show: false,
+    itemId: ""
+  })
+
+  const [showFracturesModal, setShowFracturesModal] = useState<{
+    show: boolean
+    itemId: string
+  }>({
+    show: false,
+    itemId: ""
+  })
+
+  // Hydration effect - runs once on client mount
+  useEffect(() => {
+    setHydrated(true)
+
+    // Now that we're client-side, try to rehydrate from localStorage
+    let initial: AppState
+    try {
+      const saved = localStorage.getItem('emergency-panel-state')
+      if (saved) {
+        const parsed = JSON.parse(saved) as AppState
+        if (parsed.checkableItems && parsed.protocols && parsed.assignments) {
+          initial = parsed
+        } else {
+          initial = getDefaultState()
+        }
+      } else {
+        initial = getDefaultState()
+      }
+    } catch {
+      initial = getDefaultState()
+    }
+
+    setCheckableItems(initial.checkableItems)
+    setProtocols(initial.protocols)
+    setAssignments(initial.assignments)
+  }, [])
+
+  // Save state to localStorage whenever state changes (only after hydration)
+  useEffect(() => {
+    if (!hydrated) return // Don't save until we're hydrated
+    
+    const stateToSave: AppState = {
+      checkableItems,
+      protocols,
+      assignments
+    }
+    localStorage.setItem('emergency-panel-state', JSON.stringify(stateToSave))
+  }, [checkableItems, protocols, assignments, hydrated])
+
+  // Save state when component unmounts (navigation away)
+  useEffect(() => {
+    if (!hydrated) return // Don't set up listeners until hydrated
+
+    const handleBeforeUnload = () => {
+      const stateToSave: AppState = {
+        checkableItems,
+        protocols,
+        assignments
+      }
+      localStorage.setItem('emergency-panel-state', JSON.stringify(stateToSave))
+    }
+
+    // Save on page unload/refresh
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    
+    // Save when component unmounts (navigation)
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload)
+      const stateToSave: AppState = {
+        checkableItems,
+        protocols,
+        assignments
+      }
+      localStorage.setItem('emergency-panel-state', JSON.stringify(stateToSave))
+    }
+  }, [checkableItems, protocols, assignments, hydrated])
+
+  // 3) Don't render *any* UI until after hydration
+  if (!hydrated) return null
+
   const toggleItemStatus = (id: string) => {
     const item = checkableItems.find(i => i.id === id)
     if (!item) return
 
+    // Handle special cases
+    if (id === "pupils-reaction") {
+      setShowPupilsModal({
+        show: true,
+        step: 1,
+        itemId: id
+      })
+      return
+    }
+
+    if (id === "no-wounds") {
+      setShowWoundsModal({
+        show: true,
+        itemId: id
+      })
+      return
+    }
+
+    if (id === "no-fractures") {
+      setShowFracturesModal({
+        show: true,
+        itemId: id
+      })
+      return
+    }
+
     if (item.system) {
       // For system items, show automatic evaluation modal
-      const newStatus = item.status === "inactive" ? "active" : 
-                       item.status === "active" ? "critical" : "active"
+      const newStatus = item.status === "inactive" ? "active" : item.status === "active" ? "critical" : "active"
       setShowModal({
         show: true,
         itemId: id,
@@ -131,38 +276,91 @@ export default function EmergencyPanel() {
 
   const handleModalResponse = (keepStatus: boolean) => {
     const { itemId } = showModal
-    
     // Set system property to false since human interacted with it
     setCheckableItems(prev =>
       prev.map(item => 
-        item.id === itemId 
-          ? { 
-              ...item, 
-              system: false, // Human interacted, so no longer system controlled
-              status: !keepStatus ? 
-                (item.status === "inactive" ? "active" : 
-                 item.status === "active" ? "critical" : "active") : 
-                item.status
-            }
-          : item
+        item.id === itemId ? { 
+          ...item, 
+          system: false, // Human interacted, so no longer system controlled
+          status: !keepStatus ? 
+            (item.status === "inactive" ? "active" : item.status === "active" ? "critical" : "active") : 
+            item.status
+        } : item
       )
     )
-    
     setShowModal({ show: false, itemId: "", currentStatus: "inactive" })
   }
 
   const handleNonSystemModalResponse = (setToActive: boolean) => {
     const { itemId } = showNonSystemModal
-    
     setCheckableItems(prev =>
       prev.map(item => 
-        item.id === itemId 
-          ? { ...item, status: setToActive ? "active" : "critical" }
-          : item
+        item.id === itemId ? { 
+          ...item, 
+          status: setToActive ? "active" : "critical" 
+        } : item
       )
     )
-    
     setShowNonSystemModal({ show: false, itemId: "" })
+  }
+
+  // Handle pupils modal responses
+  const handlePupilsModalResponse = (response: boolean) => {
+    const { step, itemId } = showPupilsModal
+    
+    if (step === 1) {
+      if (!response) {
+        // False for symmetric pupils - set to critical
+        setCheckableItems(prev =>
+          prev.map(item => 
+            item.id === itemId ? { ...item, status: "critical" } : item
+          )
+        )
+        setShowPupilsModal({ show: false, step: 1, itemId: "" })
+      } else {
+        // True for symmetric pupils - show second modal
+        setShowPupilsModal({ show: true, step: 2, itemId })
+      }
+    } else {
+      // Step 2 - pupils react to light
+      setCheckableItems(prev =>
+        prev.map(item => 
+          item.id === itemId ? { 
+            ...item, 
+            status: response ? "active" : "critical" 
+          } : item
+        )
+      )
+      setShowPupilsModal({ show: false, step: 1, itemId: "" })
+    }
+  }
+
+  // Handle wounds modal response
+  const handleWoundsModalResponse = (hasWounds: boolean) => {
+    const { itemId } = showWoundsModal
+    setCheckableItems(prev =>
+      prev.map(item => 
+        item.id === itemId ? { 
+          ...item, 
+          status: hasWounds ? "critical" : "active" 
+        } : item
+      )
+    )
+    setShowWoundsModal({ show: false, itemId: "" })
+  }
+
+  // Handle fractures modal response
+  const handleFracturesModalResponse = (hasFractures: boolean) => {
+    const { itemId } = showFracturesModal
+    setCheckableItems(prev =>
+      prev.map(item => 
+        item.id === itemId ? { 
+          ...item, 
+          status: hasFractures ? "critical" : "active" 
+        } : item
+      )
+    )
+    setShowFracturesModal({ show: false, itemId: "" })
   }
 
   const toggleProtocol = (protocolId: string) => {
@@ -221,7 +419,7 @@ export default function EmergencyPanel() {
       const personTasks = prev[person]
       const taskIndex = personTasks.findIndex(t => t.id === taskId)
       const task = personTasks[taskIndex]
-
+      
       if (!task.visible) return prev
 
       const updatedTasks = personTasks.map((t, index) => {
@@ -268,7 +466,7 @@ export default function EmergencyPanel() {
 
   return (
     <div className="text-white p-6 relative">
-      {/* Modal */}
+      {/* System Modal */}
       {showModal.show && (
         <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-[#87868B] rounded-lg p-6 max-w-sm w-full mx-4">
@@ -309,6 +507,81 @@ export default function EmergencyPanel() {
                 className="bg-[#A61213] text-black px-8 py-3 rounded font-bold hover:opacity-80"
               >
                 False
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Pupils Modal */}
+      {showPupilsModal.show && (
+        <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-[#87868B] rounded-lg p-6 max-w-sm w-full mx-4">
+            <h3 className="text-black text-lg font-bold mb-4 text-center">
+              {showPupilsModal.step === 1 ? "Symmetric pupils?" : "Pupils react to light?"}
+            </h3>
+            <div className="flex gap-4 justify-center">
+              <button
+                onClick={() => handlePupilsModalResponse(true)}
+                className="bg-[#246E10] text-black px-8 py-3 rounded font-bold hover:opacity-80"
+              >
+                True
+              </button>
+              <button
+                onClick={() => handlePupilsModalResponse(false)}
+                className="bg-[#A61213] text-black px-8 py-3 rounded font-bold hover:opacity-80"
+              >
+                False
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Wounds Modal */}
+      {showWoundsModal.show && (
+        <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-[#87868B] rounded-lg p-6 max-w-sm w-full mx-4">
+            <h3 className="text-black text-lg font-bold mb-4 text-center">
+              Wounds?
+            </h3>
+            <div className="flex gap-4 justify-center">
+              <button
+                onClick={() => handleWoundsModalResponse(false)}
+                className="bg-[#246E10] text-black px-8 py-3 rounded font-bold hover:opacity-80"
+              >
+                No
+              </button>
+              <button
+                onClick={() => handleWoundsModalResponse(true)}
+                className="bg-[#A61213] text-black px-8 py-3 rounded font-bold hover:opacity-80"
+              >
+                Yes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Fractures Modal */}
+      {showFracturesModal.show && (
+        <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-[#87868B] rounded-lg p-6 max-w-sm w-full mx-4">
+            <h3 className="text-black text-lg font-bold mb-4 text-center">
+              Fractures?
+            </h3>
+            <div className="flex gap-4 justify-center">
+              <button
+                onClick={() => handleFracturesModalResponse(false)}
+                className="bg-[#246E10] text-black px-8 py-3 rounded font-bold hover:opacity-80"
+              >
+                No
+              </button>
+              <button
+                onClick={() => handleFracturesModalResponse(true)}
+                className="bg-[#A61213] text-black px-8 py-3 rounded font-bold hover:opacity-80"
+              >
+                Yes
               </button>
             </div>
           </div>
@@ -408,7 +681,9 @@ export default function EmergencyPanel() {
             {protocols.map((protocol) => (
               <div 
                 key={protocol.id} 
-                className={`flex items-center justify-between rounded p-2 ${protocol.checked ? 'bg-[#D1546C]' : 'bg-[#D9D9D9]'} ${protocol.disabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                className={`flex items-center justify-between rounded p-2 ${
+                  protocol.checked ? 'bg-[#D1546C]' : 'bg-[#D9D9D9]'
+                } ${protocol.disabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
               >
                 <div className="flex items-center space-x-2">
                   <div className="relative">

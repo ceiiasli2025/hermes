@@ -50,7 +50,7 @@ export const MedicalRecordModal: FC<MedicalRecordModalProps> = ({
             <p className='text-2xl uppercase text-white font-roboto'>{user.birthdate}</p>
           </div>
           <div className='flex items-center gap-4'>
-            <p className='text-3xl uppercase text-white font-roboto'>Gender:</p>
+            <p className='text-3xl uppercase text-white font-roboto'>Sex:</p>
             <p className='text-2xl uppercase text-white font-roboto'>{user.gender}</p>
           </div>
         </div>
