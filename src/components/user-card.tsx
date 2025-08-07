@@ -14,7 +14,7 @@ type UserCardProps = {
 const UserCard: FC<UserCardProps> = ({ id, name, nickname, img, location, status }) => {
   const [showModal, setShowModal] = useState(false);
 
-  const cardClass = `flex-1 flex flex-col items-center justify-between p-4 rounded-xl gap-4 cursor-pointer aspect-square
+  const cardClass = `flex-1 flex flex-col items-center justify-between p-4 rounded-xl gap-4 cursor-pointer aspect-square overflow-hidden
     ${status === 'ok' ? 'bg-[#246E10]' : status === 'warning' ? 'bg-[#B77700]' : 'bg-[#A61213]'}`;
 
   const cardContent = (
@@ -25,7 +25,7 @@ const UserCard: FC<UserCardProps> = ({ id, name, nickname, img, location, status
         alt={`${name}'s avatar`}
         width={256}
         height={256}
-        className="rounded-full w-[80%] object-contain !aspect-square scale-200"
+        className="rounded-full w-[50%] object-contain !aspect-square scale-200"
       />
       <div className='flex items-center w-full'>
         <Image
