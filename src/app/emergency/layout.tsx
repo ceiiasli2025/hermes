@@ -7,7 +7,7 @@ export default function EmergencyLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className='flex flex-col h-full w-screen'>
+    <div className='flex flex-col h-screen w-screen'>
       {children}
     </div>
   );

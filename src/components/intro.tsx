@@ -10,7 +10,7 @@ export default function Intro() {
   }, 5000);
 
   return (
-    <div className="flex min-h-full min-w-screen items-center justify-center">
+    <div className="flex h-screen min-w-screen items-center justify-center">
       <Image
         src="/logo.png"
         alt="Hermes Logo"

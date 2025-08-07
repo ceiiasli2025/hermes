@@ -1,11 +1,11 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Plus, X } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import Image from "next/image"
 
 type ItemStatus = "inactive" | "active" | "critical"
-type Person = "REID" | "VICTOR" | "CHRISTINA"
+type Person = "CAIO" | "ADRIANO" | "RITA"
 
 interface CheckableItem {
   id: string
@@ -34,9 +34,9 @@ interface AppState {
   checkableItems: CheckableItem[]
   protocols: Protocol[]
   assignments: {
-    REID: Assignment[]
-    VICTOR: Assignment[]
-    CHRISTINA: Assignment[]
+    CAIO: Assignment[]
+    ADRIANO: Assignment[]
+    RITA: Assignment[]
   }
 }
 
@@ -79,18 +79,18 @@ const getDefaultState = (): AppState => ({
     { id: "trauma", name: "Trauma", percentage: 9, checked: false, disabled: false },
   ],
   assignments: {
-    REID: [
-      { id: "reid-1", text: "Prepare infirmary", status: "inactive" as ItemStatus, visible: false, isDrug: false },
-      { id: "reid-2", text: "Prepare IV mat.", status: "critical" as ItemStatus, visible: false, isDrug: false },
-      { id: "reid-3", text: "Prepare drugs", status: "critical" as ItemStatus, visible: false, isDrug: true },
+    CAIO: [
+      { id: "caio-1", text: "Prepare infirmary", status: "inactive" as ItemStatus, visible: false, isDrug: false },
+      { id: "caio-2", text: "Prepare IV mat.", status: "critical" as ItemStatus, visible: false, isDrug: false },
+      { id: "caio-3", text: "Prepare drugs", status: "critical" as ItemStatus, visible: false, isDrug: true },
     ],
-    VICTOR: [
-      { id: "victor-1", text: "Meet Jeremy", status: "inactive" as ItemStatus, visible: false, isDrug: false },
-      { id: "victor-2", text: "Jeremy to Rover", status: "critical" as ItemStatus, visible: false, isDrug: false },
+    ADRIANO: [
+      { id: "adriano-1", text: "Meet Diogo", status: "inactive" as ItemStatus, visible: false, isDrug: false },
+      { id: "adriano-2", text: "Diogo to Rover", status: "critical" as ItemStatus, visible: false, isDrug: false },
     ],
-    CHRISTINA: [
-      { id: "christina-1", text: "Max EVA1 suit O2", status: "inactive" as ItemStatus, visible: false, isDrug: false },
-      { id: "christina-2", text: "Ensure meeting safety", status: "critical" as ItemStatus, visible: false, isDrug: false },
+    RITA: [
+      { id: "rita-1", text: "Max EVA1 suit O2", status: "inactive" as ItemStatus, visible: false, isDrug: false },
+      { id: "rita-2", text: "Ensure meeting safety", status: "critical" as ItemStatus, visible: false, isDrug: false },
     ],
   }
 })
@@ -104,13 +104,13 @@ export default function EmergencyPanel() {
   const [checkableItems, setCheckableItems] = useState<CheckableItem[]>([])
   const [protocols, setProtocols] = useState<Protocol[]>([])
   const [assignments, setAssignments] = useState<{
-    REID: Assignment[]
-    VICTOR: Assignment[]
-    CHRISTINA: Assignment[]
+    CAIO: Assignment[]
+    ADRIANO: Assignment[]
+    RITA: Assignment[]
   }>({
-    REID: [],
-    VICTOR: [],
-    CHRISTINA: []
+    CAIO: [],
+    ADRIANO: [],
+    RITA: []
   })
 
   const [showModal, setShowModal] = useState<{
@@ -163,7 +163,7 @@ export default function EmergencyPanel() {
     // Now that we're client-side, try to rehydrate from localStorage
     let initial: AppState
     try {
-      const saved = localStorage.getItem('emergency-panel-state')
+      const saved = localStorage.getItem('emergency-panel-state-v2')
       console.log('Loading from localStorage:', saved ? 'Found saved data' : 'No saved data found')
       
       if (saved) {
@@ -204,14 +204,14 @@ export default function EmergencyPanel() {
       assignments
     }
     console.log('Saving to localStorage')
-    localStorage.setItem('emergency-panel-state', JSON.stringify(stateToSave))
+    localStorage.setItem('emergency-panel-state-v2', JSON.stringify(stateToSave))
   }, [checkableItems, protocols, assignments, initialLoadComplete])
 
   // Save state when component unmounts (navigation away)
   useEffect(() => {
     if (!initialLoadComplete) return;
     localStorage.setItem(
-      'emergency-panel-state',
+      'emergency-panel-state-v2',
       JSON.stringify({ checkableItems, protocols, assignments })
     );
   }, [checkableItems, protocols, assignments, initialLoadComplete]);
@@ -371,13 +371,13 @@ export default function EmergencyPanel() {
       if (isEmergencyChecked) {
         // Show first assignment of each user as critical
         setAssignments(prev => ({
-          REID: prev.REID.map((task, index) => 
+          CAIO: prev.CAIO.map((task, index) => 
             index === 0 ? { ...task, visible: true, status: "critical" as ItemStatus } : task
           ),
-          VICTOR: prev.VICTOR.map((task, index) => 
+          ADRIANO: prev.ADRIANO.map((task, index) => 
             index === 0 ? { ...task, visible: true, status: "critical" as ItemStatus } : task
           ),
-          CHRISTINA: prev.CHRISTINA.map((task, index) => 
+          RITA: prev.RITA.map((task, index) => 
             index === 0 ? { ...task, visible: true, status: "critical" as ItemStatus } : task
           ),
         }))
@@ -387,18 +387,18 @@ export default function EmergencyPanel() {
     if (protocolId === "tachydisrithmias") {
       const isTachyChecked = !protocols.find(p => p.id === "tachydisrithmias")?.checked
       if (isTachyChecked) {
-        // Make Reid's 3rd assignment (Prepare drugs) visible
+        // Make CAIO's 3rd assignment (Prepare drugs) visible
         setAssignments(prev => ({
           ...prev,
-          REID: prev.REID.map((task, index) => 
+          CAIO: prev.CAIO.map((task, index) => 
             index === 2 ? { ...task, visible: true } : task
           )
         }))
       } else {
-        // Hide Reid's 3rd assignment when unchecked
+        // Hide CAIO's 3rd assignment when unchecked
         setAssignments(prev => ({
           ...prev,
-          REID: prev.REID.map((task, index) => 
+          CAIO: prev.CAIO.map((task, index) => 
             index === 2 ? { ...task, visible: false } : task
           )
         }))
@@ -708,17 +708,17 @@ export default function EmergencyPanel() {
           </div>
         </div>
 
-        {/* VICTOR */}
+        {/* ADRIANO */}
         <div className="space-y-3 col-span-1 p-8">
           <div className="flex items-center space-x-2">
             <Image src="/icons/phone.png" alt="Contact icon" width={32} height={32} className="inline-block w-8 h-8" />
-            <h3 className="text-lg font-bold">VICTOR</h3>
+            <h3 className="text-lg font-bold">ADRIANO</h3>
           </div>
           <div className="space-y-2">
-            {getVisibleAssignments("VICTOR").map((task) => (
+            {getVisibleAssignments("ADRIANO").map((task) => (
               <div key={task.id} className="flex items-center space-x-2">
                 <button
-                  onClick={() => handleAssignmentClick("VICTOR", task.id)}
+                  onClick={() => handleAssignmentClick("ADRIANO", task.id)}
                   className={`!w-4 !h-4 !min-w-4 !min-h-4 rounded ${getStatusColor(task.status)} hover:opacity-80`}
                 ></button>
                 <span className="text-sm">{task.text}</span>
@@ -727,17 +727,17 @@ export default function EmergencyPanel() {
           </div>
         </div>
 
-        {/* REID */}
+        {/* CAIO */}
         <div className="space-y-3 col-span-1 p-8">
           <div className="flex items-center space-x-2">
             <Image src="/icons/phone.png" alt="Contact icon" width={32} height={32} className="inline-block w-8 h-8" />
-            <h3 className="text-lg font-bold">REID</h3>
+            <h3 className="text-lg font-bold">CAIO</h3>
           </div>
           <div className="space-y-2">
-            {getVisibleAssignments("REID").map((task) => (
+            {getVisibleAssignments("CAIO").map((task) => (
               <div key={task.id} className="flex items-center space-x-2">
                 <button
-                  onClick={() => handleAssignmentClick("REID", task.id)}
+                  onClick={() => handleAssignmentClick("CAIO", task.id)}
                   className={`!w-4 !h-4 !min-w-4 !min-h-4 rounded ${getStatusColor(task.status)} hover:opacity-80`}
                 ></button>
                 <span className="text-sm">{task.text}</span>
@@ -746,18 +746,18 @@ export default function EmergencyPanel() {
           </div>
         </div>
 
-        {/* CHRISTINA */}
+        {/* RITA */}
         <div className="space-y-3 col-span-1 p-8">
           <div className="flex items-center space-x-2">
             <Image src="/icons/phone.png" alt="Contact icon" width={32} height={32} className="inline-block w-8 h-8" />
-            <h3 className="text-lg font-bold">CHRISTINA</h3>
+            <h3 className="text-lg font-bold">RITA</h3>
             <span className="bg-white text-[#A61213] text-lg font-bold py-0 flex items-center justify-center rounded-lg ml-4 w-7 aspect-square">TL</span>
           </div>
           <div className="space-y-2">
-            {getVisibleAssignments("CHRISTINA").map((task) => (
+            {getVisibleAssignments("RITA").map((task) => (
               <div key={task.id} className="flex items-center space-x-2">
                 <button
-                  onClick={() => handleAssignmentClick("CHRISTINA", task.id)}
+                  onClick={() => handleAssignmentClick("RITA", task.id)}
                   className={`!w-4 !h-4 !min-w-4 !min-h-4 rounded ${getStatusColor(task.status)} hover:opacity-80`}
                 ></button>
                 <span className="text-sm">{task.text}</span>

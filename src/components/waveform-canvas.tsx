@@ -8,6 +8,7 @@ interface WaveformCanvasProps {
   waveType: "ecg" | "spo2" | "bp" | "etco2"
   systolic?: number
   diastolic?: number
+  speed?: number
 }
 
 export default function WaveformCanvas({
@@ -18,6 +19,7 @@ export default function WaveformCanvas({
   waveType,
   systolic = 120,
   diastolic = 80,
+  speed = 1
 }: WaveformCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
@@ -122,7 +124,7 @@ export default function WaveformCanvas({
     ctx.stroke()
 
     // Draw scanning line
-    const scanX = (time * 50) % width
+    const scanX = (time * 50 * speed) % width
     ctx.strokeStyle = '#151618'
     ctx.globalAlpha = 1
     ctx.lineWidth = 24

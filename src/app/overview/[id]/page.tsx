@@ -81,7 +81,12 @@ export default function UserOverviewPage() {
             <div className='flex items-center justify-between gap-4'>
               <div className="relative inline-block">
                 <div className="w-72 h-24 bg-[#95969A] rounded-xl p-2">
-                  <div className={`w-[${user?.mentalStage.percentage}%] h-full bg-[#246E10] rounded-lg`}></div>
+                  <div className='w-full bg-[#5B5C5E] relative h-full rounded-lg overflow-hidden'>
+                    <div
+                      style={{ width: `${user?.mentalStage.percentage}%` }}
+                      className={`absolute inset-y-0 left-0 h-full bg-[#246E10] rounded-lg`}
+                    />
+                  </div>
                 </div>
                 <div className="absolute top-1/2 -translate-1/2 -right-4 h-12 flex items-center justify-center w-4 bg-[#95969A] rounded-r-sm"/>
               </div>

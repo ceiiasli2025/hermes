@@ -25,13 +25,13 @@ export default function EmergencyPage() {
           <h1 className="text-5xl font-regular text-white uppercase">Emergency Panel</h1>
           <div className='flex items-center gap-4 ml-auto mr-4'>
             <Image
-              src="/users/jeremy.png"
-              alt="Jeremy's avatar"
-              width={64}
-              height={64}
-              className="rounded-full w-16 h-16 object-cover"
+              src="/users/diogo.png"
+              alt="Diogo's avatar"
+              width={256}
+              height={256}
+              className="rounded-full w-16 h-16 object-cover scale-125"
             />
-            <p className='text-3xl font-medium text-[#929397]'>Jeremy Hansen</p>
+            <p className='text-3xl font-medium text-[#929397]'>Diogo Azevedo</p>
           </div>
         </div>
       </Navbar>

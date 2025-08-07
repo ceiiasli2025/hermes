@@ -4,9 +4,10 @@ import WaveformCanvas from '@/components/waveform-canvas';
 interface WaveformProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   user: any;
+  speed?: number; // Optional speed prop to control waveform speed
 }
 
-const Waveform: FC<WaveformProps> = ({ user }) => {
+const Waveform: FC<WaveformProps> = ({ user, speed }) => {
   const [time, setTime] = useState(0)
 
   useEffect(() => {
@@ -26,6 +27,7 @@ const Waveform: FC<WaveformProps> = ({ user }) => {
             amplitude={0.8}
             time={time}
             waveType="ecg"
+            speed={speed}
           />
         </div>
         <div className="p-4 flex flex-col items-center justify-center animate-pulse gap-2">
@@ -39,6 +41,7 @@ const Waveform: FC<WaveformProps> = ({ user }) => {
             amplitude={0.6}
             time={time}
             waveType="spo2"
+            speed={speed}
           />
         </div>
          <div className="p-4 flex flex-col items-center justify-center animate-pulse gap-2">
@@ -52,6 +55,7 @@ const Waveform: FC<WaveformProps> = ({ user }) => {
             amplitude={0.5}
             time={time}
             waveType="etco2"
+            speed={speed}
           />
         </div>
         <div className="p-4 flex flex-col items-center justify-center animate-pulse gap-2">

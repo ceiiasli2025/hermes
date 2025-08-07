@@ -4,11 +4,11 @@ import { Navbar } from "@/components/navbar";
 import NavigationItems from "@/components/navigation-items";
 
 export const metadata: Metadata = {
-  title: "Hermes SLI - Base",
+  title: "Hermes SLI - Construction",
   description: "Health tracking dashboard for Hermes",
 };
 
-export default function BaseLayout({
+export default function ConstructionLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -23,4 +23,5 @@ export default function BaseLayout({
       <main className='h-full'>{children}</main>
     </div>
   );
+  
 }

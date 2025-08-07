@@ -7,7 +7,7 @@ import { useStatus } from '@/context/status';
 const Dashboard: FC = () => {
   const { criticalStatus } = useStatus();
   return (
-    <div className='p-8 grid grid-cols-4 grid-rows-2 gap-x-8 gap-y-16 h-full'>
+    <div className='p-8 grid grid-cols-4 grid-rows-2 gap-x-8 gap-y-16'>
       {[...data.slice(0, 3),
       { id: 'contact-all', contactAll: true },
       ...data.slice(3)

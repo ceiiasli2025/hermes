@@ -59,7 +59,7 @@ export const MedicalRecordModal: FC<MedicalRecordModalProps> = ({
           <p className='text-2xl uppercase text-white font-roboto'>{user.bloodType}</p>
         </div>
         <div className='grid grid-cols-2 grid-rows-2 gap-4'>
-          <div className='flex flex-col col-span-1 row-span-2 items-center justify-center gap-8 bg-[#777777] rounded-xl p-4'>
+          <div className='flex flex-col col-span-1 row-span-2 items-start justify-center gap-8 bg-[#777777] rounded-xl p-4'>
             <div className='flex items-center gap-4 w-full px-4'>
               <Image
                 src="/record_1.png"
@@ -70,9 +70,14 @@ export const MedicalRecordModal: FC<MedicalRecordModalProps> = ({
               />
               <p className='text-xl text-black font-roboto font-semibold w-2/3 text-center'>Past Medical History</p>
             </div>
-            <ul className='list-disc text-black font-roboto font-semibold text-xl'>
-              <li>Adaptative Microgravity Syndrome</li>
-              <li>Shellfish allergy</li>
+            <ul className='list-disc text-black font-roboto font-semibold text-xl pl-16'>
+              { user.medicalRecord && user.medicalRecord.length > 0 ? (
+                user.medicalRecord.map((record: string, index: number) => (
+                  <li key={index}>{record}</li>
+                ))
+              ) : (
+                <li>None</li>
+              )}
             </ul>
           </div>
           <div className='flex items-center justify-center gap-2 bg-[#777777] rounded-xl p-4'>

@@ -14,7 +14,7 @@ type UserCardProps = {
 const UserCard: FC<UserCardProps> = ({ id, name, nickname, img, location, status }) => {
   const [showModal, setShowModal] = useState(false);
 
-  const cardClass = `flex-1 flex flex-col items-center justify-between p-4 rounded-xl gap-4 cursor-pointer
+  const cardClass = `flex-1 flex flex-col items-center justify-between p-4 rounded-xl gap-4 cursor-pointer aspect-square
     ${status === 'ok' ? 'bg-[#246E10]' : status === 'warning' ? 'bg-[#B77700]' : 'bg-[#A61213]'}`;
 
   const cardContent = (
@@ -23,9 +23,9 @@ const UserCard: FC<UserCardProps> = ({ id, name, nickname, img, location, status
       <Image
         src={`${img}`}
         alt={`${name}'s avatar`}
-        width={64}
-        height={64}
-        className="rounded-full w-[50%] object-contain !aspect-square"
+        width={256}
+        height={256}
+        className="rounded-full w-[80%] object-contain !aspect-square scale-200"
       />
       <div className='flex items-center w-full'>
         <Image
@@ -35,7 +35,7 @@ const UserCard: FC<UserCardProps> = ({ id, name, nickname, img, location, status
           height={32}
           className="inline-block w-8 h-8"
         />
-        <p className='text-white font-medium font-roboto text-2xl uppercase'>{location}</p>
+        <p className='text-white font-medium font-roboto text-xl uppercase truncate'>{location}</p>
         <Image
           src={`/icons/phone.png`}
           alt={`Phone icon`}
