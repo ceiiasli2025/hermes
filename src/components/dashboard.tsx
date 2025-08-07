@@ -32,7 +32,7 @@ const Dashboard: FC = () => {
           img={user.img}
           location={
             criticalStatus
-              ? user.id === 4 || user.id === 7
+              ? user.id === 7
                 ? 'Laboratory'
                 : user.id === 5
                   ? 'EVA1'
