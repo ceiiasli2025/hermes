@@ -1,14 +1,10 @@
-import Image from 'next/image';
 export default function ConstructionPage() {
   return (
-    <div className="flex h-full w-full items-start justify-center bg-[#010C24]">
-      <Image
-        src="/construction-bg.png"
-        alt="Under Construction"
-        width={1900}
-        height={1070}
-        className="w-full h-full object-contain"
-      />
-    </div>
+    <iframe
+      src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2Fp1GVSJbsU7ET05AzT9ZAsa%2FUntitled%3Fnode-id%3D10-118%26p%3Df%26t%3Dt5ASWW2eXveyGpRU-0"
+      className="w-full h-full"
+      style={{ border: "none" }}
+      title="Rover Control Center"
+    ></iframe>
   );
 }
